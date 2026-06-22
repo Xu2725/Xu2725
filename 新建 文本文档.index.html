@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页 | 全栈创作者</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        :root {
+            --main: #4361ee;
+            --second: #7209b7;
+            --light: #f8f9fa;
+            --dark: #121420;
+            --gray: #6c757d;
+        }
+        body {
+            color: #333;
+            overflow-x: hidden;
+        }
+        /* 导航栏 */
+        nav {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 999;
+            padding: 1rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s ease;
+        }
+        nav.active {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, var(--main), var(--second));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 1rem;
+            transition: 0.3s;
+            position: relative;
+        }
+        nav.active .nav-links a {
+            color: #333;
+        }
+        .nav-links a::after {
+            content: "";
+            width: 0;
+            height: 2px;
+            background: var(--main);
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            transition: 0.3s;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        /* 首页横幅 */
+        #home {
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .hero-content h1 span {
+            background: linear-gradient(90deg, #4cc9f0, #f72585);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .hero-content p {
+            font-size: 1.3rem;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+        .btn-group a {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, var(--main), var(--second));
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+        }
+        .btn-outline {
+            border: 2px solid #fff;
+            color: white;
+        }
+        .btn-outline:hover {
+            background: white;
+            color: var(--dark);
+            transform: translateY(-5px);
+        }
+        /* 通用区块样式 */
+        section {
+            padding: 100px 8%;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title h2::after {
+            content: "";
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--main), var(--second));
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+        }
+        .section-title p {
+            color: var(--gray);
+            margin-top: 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* 关于我 */
+        #about {
+            background: var(--light);
+        }
+        .about-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .about-avatar {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .about-avatar img {
+            width: 100%;
+            display: block;
+        }
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        .about-text p {
+            line-height: 1.9;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        .about-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .about-info div span:first-child {
+            font-weight: bold;
+            color: var(--dark);
+            display: inline-block;
+            width: 100px;
+        }
+        /* 技能板块 */
+        #skills {
+            background: #fff;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .skill-card {
+            background: var(--light);
+            padding: 35px 25px;
+            border-radius: 16px;
+            text-align: center;
+            transition: 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 35px rgba(67, 97, 238, 0.12);
+        }
+        .skill-card h4 {
+            margin: 15px 0 10px;
+            font-size: 1.2rem;
+        }
+        .skill-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--main), var(--second));
+            border-radius: 10px;
+        }
+        /* 项目作品 */
+        #works {
+            background: var(--light);
+        }
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+        }
+        .work-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        .work-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        .work-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+        .work-card:hover .work-img img {
+            transform: scale(1.1);
+        }
+        .work-text {
+            padding: 25px;
+        }
+        .work-text h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .work-text p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e8edff;
+            color: var(--main);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+        }
+        /* 经历时间线 */
+        #experience {
+            background: #fff;
+        }
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            border-left: 3px solid var(--main);
+            padding-left: 30px;
+        }
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: "";
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(var(--main), var(--second));
+            border-radius: 50%;
+            position: absolute;
+            left: -38px;
+            top: 5px;
+        }
+        .timeline-date {
+            color: var(--main);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .timeline-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .timeline-item p {
+            color: #444;
+            line-height: 1.8;
+        }
+        /* 联系板块 */
+        #contact {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+        }
+        #contact .section-title h2 {
+            color: white;
+        }
+        .contact-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        .contact-info h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+        .contact-info p {
+            color: #ccc;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .contact-item .icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            font-size: 1.2rem;
+        }
+        .form-box input, .form-box textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        .form-box input::placeholder, .form-box textarea::placeholder {
+            color: #aaa;
+        }
+        .form-box textarea {
+            min-height: 140px;
+            resize: none;
+        }
+        .form-box button {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, var(--main), var(--second));
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .form-box button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+        }
+        /* 页脚 */
+        footer {
+            background: var(--dark);
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+        }
+        /* 移动端适配 */
+        @media (max-width:768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .about-wrap, .contact-wrap {
+                grid-template-columns: 1fr;
+            }
+            .about-info {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 70px 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="logo">个人主页</div>
+        <div class="nav-links">
+            <a href="#home">首页</a>
+            <a href="#about">关于我</a>
+            <a href="#skills">技能</a>
+            <a href="#works">作品</a>
+            <a href="#experience">经历</a>
+            <a href="#contact">联系我</a>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <section id="home">
+        <div class="hero-content">
+            <h1>你好，我是 <span>创作者</span></h1>
+            <p>前端开发 / UI设计 / 独立开发者，热爱代码与创意，专注打造美观流畅的网页与交互作品，持续学习，持续输出。</p>
+            <div class="btn-group">
+                <a href="#works" class="btn-primary">查看我的作品</a>
+                <a href="#contact" class="btn-outline">联系我</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about">
+        <div class="section-title">
+            <h2>关于我</h2>
+            <p>了解我的个人背景、擅长领域与个人特质</p>
+        </div>
+        <div class="about-wrap">
+            <div class="about-avatar">
+                <img src="https://picsum.photos/id/1005/500/600" alt="个人头像">
+            </div>
+            <div class="about-text">
+                <h3>热爱创造的全栈爱好者</h3>
+                <p>我是一名专注于网页开发与视觉设计的创作者，拥有多年网页制作经验，擅长从零搭建完整网站，兼顾美观UI与流畅交互。平时喜欢研究前端新技术、独立开发小项目，也会分享技术笔记。</p>
+                <p>工作中注重细节、逻辑清晰；生活中喜欢摄影、阅读、探索新鲜事物，始终保持学习心态，不断提升综合能力。</p>
+                <div class="about-info">
+                    <div><span>姓名：</span>徐寅桀</div>
+                    <div><span>年龄：</span>18岁</div>
+                    <div><span>专业：</span>计算机应用技术</div>
+                    <div><span>城市：</span>河南郑州</div>
+                    <div><span>邮箱：</span>2378672306@qq.com</div>
+                    <div><span>状态：</span>可接单/实习</div>
+                </div>
+                <a href="#contact" class="btn-primary">私信联系</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能板块 -->
+    <section id="skills">
+        <div class="section-title">
+            <h2>专业技能</h2>
+            <p>日常使用的技术栈，包含前端、设计、后端基础工具</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h4>HTML / CSS</h4>
+                <p>页面布局、动画、响应式、Flex/Grid</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:95%"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>JavaScript</h4>
+                <p>原生JS、DOM操作、交互逻辑</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:88%"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>Vue / React</h4>
+                <p>组件开发、路由、状态管理</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:80%"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>UI设计</h4>
+                <p>Figma、页面配色、海报设计</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:85%"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>后端基础</h4>
+                <p>NodeJS、简单接口、MySQL数据库</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:70%"></div>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>工具</h4>
+                <p>Git、VSCode、Photoshop、Axure</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width:90%"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目作品 -->
+    <section id="works">
+        <div class="section-title">
+            <h2>项目作品</h2>
+            <p>过往独立开发/参与制作的网页、小程序、设计案例</p>
+        </div>
+        <div class="works-grid">
+            <div class="work-card">
+                <div class="work-img">
+                    <img src="https://picsum.photos/id/1/600/400" alt="项目1">
+                </div>
+                <div class="work-text">
+                    <h4>企业官网单页网站</h4>
+                    <p>为本地公司开发响应式企业宣传站，包含轮播、产品展示、在线留言功能。</p>
+                    <span class="tag">HTML</span>
+                    <span class="tag">CSS</span>
+                    <span class="tag">JS</span>
+                </div>
+            </div>
+            <div class="work-card">
+                <div class="work-img">
+                    <img src="https://picsum.photos/id/2/600/400" alt="项目2">
+                </div>
+                <div class="work-text">
+                    <h4>在线待办管理系统</h4>
+                    <p>基于Vue开发的轻量化任务管理工具，本地存储数据，支持分类、拖拽排序。</p>
+                    <span class="tag">Vue2</span>
+                    <span class="tag">LocalStorage</span>
+                </div>
+            </div>
+            <div class="work-card">
+                <div class="work-img">
+                    <img src="https://picsum.photos/id/3/600/400" alt="项目3">
+                </div>
+                <div class="work-text">
+                    <h4>个人博客静态页面</h4>
+                    <p>极简风博客页面，文章分页、标签分类、暗黑模式切换，适配移动端。</p>
+                    <span class="tag">原生JS</span>
+                    <span class="tag">响应式</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 经历时间线 -->
+    <section id="experience">
+        <div class="section-title">
+            <h2>学习 & 工作经历</h2>
+            <p>我的成长历程、实习与项目实践记录</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2025.09 - 至今</div>
+                <h4>在校学习 | 计算机应用专业</h4>
+                <p>系统学习计算机基础、网页开发、数据库等课程，课余自主练习前端项目，完成多个课程大作业。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2026.01 - 2026.02</div>
+                <h4>前端实习生 | 本地网络科技公司</h4>
+                <p>协助开发企业官网页面，修改UI样式，编写交互效果，参与移动端适配与页面性能优化。</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2026.03 - 至今</div>
+                <h4>独立接单 | 个人网页定制</h4>
+                <p>承接个人主页、小店宣传页、活动专题页定制，独立完成设计+代码开发全流程。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我 -->
+    <section id="contact">
+        <div class="section-title">
+            <h2>联系我</h2>
+            <p>有合作、实习、定制网站需求可以留言，我会尽快回复</p>
+        </div>
+        <div class="contact-wrap">
+            <div class="contact-info">
+                <h3>随时沟通</h3>
+                <p>如果你有网页制作、页面修改、UI设计相关需求，欢迎发送消息，支持长期合作、低价学生单。</p>
+                <div class="contact-item">
+                    <div class="icon">📧</div>
+                    <div>
+                        <h5>邮箱</h5>
+                        <p>2378672306@qq.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="icon">📱</div>
+                    <div>
+                        <h5>微信</h5>
+                        <p>xyj2378672306</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="icon">📍</div>
+                    <div>
+                        <h5>地址</h5>
+                        <p>河南省郑州市</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-box">
+                <input type="text" placeholder="你的姓名">
+                <input type="text" placeholder="联系方式（微信/邮箱）">
+                <textarea placeholder="请描述你的需求或留言内容"></textarea>
+                <button>发送留言</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2026 个人主页 | 全部代码原创，禁止盗用</p>
+    </footer>
+
+    <!-- JS交互 -->
+    <script>
+        // 导航栏滚动变色
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 50) {
+                navbar.classList.add('active');
+            } else {
+                navbar.classList.remove('active');
+            }
+        })
+
+        // 表单提交简单弹窗
+        const btn = document.querySelector('.form-box button');
+        btn.addEventListener('click', ()=>{
+            alert("留言提交成功！我会尽快联系你~");
+        })
+    </script>
+</body>
+</html>
